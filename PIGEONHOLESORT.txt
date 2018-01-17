@@ -1,0 +1,99 @@
+--PIGEON HOLE SORTING ALGORITHM --
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+
+namespace ConsoleApplication1
+{
+    class pigeon_hole_sort
+    {
+        public int [] sort(int [] arr)
+        {
+            
+            int min = arr[0];
+            int max = arr[arr.Length - 1];
+            // method of max and min 
+            for (int i = 0; i < arr.Length; i++)
+            {
+                if (min > arr[i])
+                {
+                    min = arr[i];
+                }
+                if (max < arr[i])
+                {
+                    max = arr[i];
+                }
+            }
+            //working of pigeon hole sort
+            int range = max - min + 1;
+            int[,] hole = new int[2, range];
+
+            for (int i = 0; i < arr.Length; i++)
+            {
+                hole[0, arr[i] - min] = arr[i];
+                hole[1, arr[i] - min] = hole[1, arr[i] - min] + 1;
+            }
+            
+            int count1 = 0;
+            for (int i = 0; i < range; i++)
+            {
+                int count = hole[1, i];
+                for (int j = 0; j < count; j++)
+                {
+                    arr[count1] = hole[0, i];
+                    count1++;
+                }
+
+            }
+            // return sorted array 
+            return arr;
+
+        }
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+
+            pigeon_hole_sort pgn = new pigeon_hole_sort();
+            int[] array = new int[7];
+            string location = @"C:\Users\muhammadbasit\Desktop\DS Project final.txt";
+
+            
+            int a = 0;
+            //read unsorted array from file
+            using (StreamReader ob = File.OpenText(location))
+            {
+                string b = "";
+                while ((b = ob.ReadLine()) != null)
+                {
+                    array[a] = int.Parse(b);
+                    a++;
+                }
+            }
+            int[] arr = pgn.sort(array);
+
+            // print sorted array
+            for (int i = 0; i < arr.Length; i++)
+            {
+                Console.Write("{0},", arr[i]);
+            }
+            //sorted array write in the file
+            using (StreamWriter ob = File.CreateText(location))
+            {
+                for (int b = 0; b < array.Length; b++)
+                {
+                    ob.WriteLine(array[b]);
+                }
+            }
+
+
+            
+            Console.ReadKey();
+        }
+    }
+}
